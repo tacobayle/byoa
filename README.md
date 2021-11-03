@@ -89,7 +89,7 @@ variable "vcenter" {
 - Create a new folder within vCenter
 - Create a jump host within the vCenter folder
 - Create a client VM within the vCenter folder with Avi DNS configured as DNS server
-- Create 2 * k8s clusters:
+- Create/Configure 2 * k8s clusters:
   - 1 master node per cluster
   - 2 workers nodes per cluster
   - k8S version is defined per cluster in variables.tf (vmw.kubernetes.[].version)
@@ -97,7 +97,7 @@ variable "vcenter" {
   - AKO version is defined per cluster in variables.tf (vmw.kubernetes.[].ako.version)
   - CNI name is defined (vmw.kubernetes.[].cni.name)
   - CNI yaml manifest url is defined (vmw.kubernetes.[].cni.url)
-- Spin up 1 Avi Controller VM
+- Spin up 1 Avi Controller VM within the vCenter folder
 - Configure Avi Controller:
   - Bootstrap Avi Controller (Password, NTP, DNS)
   - VMW cloud

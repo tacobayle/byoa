@@ -61,9 +61,6 @@
         - cloud
         - vmw
 
-    - name: Debug
-      debug:
-        msg: "{{ vcenter_configuration }}"
 
     - name: Configure Avi Cloud - VMW
       community.network.avi_cloud:
