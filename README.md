@@ -85,8 +85,6 @@ variable "vcenter" {
     }  
 ```
 
-1. All the parameters/variables defined in variables.tf
-
 ## Use terraform plan to:
 - Create a new folder within vCenter
 - Create a jump host within the vCenter folder
