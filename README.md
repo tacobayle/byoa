@@ -87,12 +87,17 @@ variable "vcenter" {
 
 1. All the parameters/variables defined in variables.tf
 
-## Use the terraform script to:
-- Create new folder within v-center:
-    - one for the Avi Apps
-    - one for the Avi controller
-- Create NSX-T segment(s)
-- Create Content Library and populate it with the OVA(s) mentioned above 
+## Use terraform plan to:
+- Create new folder within vCenter
+- Create a jump host within the vCenter folder
+- Create a client VM within the vCenter folder 
+- Create 2 * k8s clusters:
+  - 1 master node per cluster
+  - 2 workers nodes per cluster
+  - k8S version is defined per cluster in variables.tf (vmw.kubernetes.[].version)
+  - Docker version is defined per cluster in variables.tf (vmw.kubernetes.[].docker.version)
+  - AKO version is defined per cluster in variables.tf (vmw.kubernetes.[].docker.version)
+-   
 - Spin up 1 Avi Controller VM(s) - Clone from Content Library
 - Spin up 2 backend VM(s) - Clone from Content Library
 - Spin up 1 jump VM with ansible installed  - Clone from Content Library - userdata to install packages

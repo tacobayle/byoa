@@ -48,16 +48,16 @@ resource "null_resource" "ansible_bootstrap_cluster" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo '[defaults]' | tee ansible_cluster_${count.index}/ansible.cfg",
-      "echo 'private_key_file = /home/${var.jump.username}/.ssh/${var.ssh_key.private_key_filename}' | tee -a ansible_cluster_${count.index}/ansible.cfg",
-      "echo 'host_key_checking = False' | tee -a ansible_cluster_${count.index}/ansible.cfg",
-      "echo 'host_key_auto_add = True' | tee -a ansible_cluster_${count.index}/ansible.cfg"
+      "echo '[defaults]' | tee k8sInstall/ansible.cfg",
+      "echo 'private_key_file = /home/${var.jump.username}/.ssh/${var.ssh_key.private_key_filename}' | tee -a k8sInstall/ansible.cfg",
+      "echo 'host_key_checking = False' | tee -a k8sInstall/ansible.cfg",
+      "echo 'host_key_auto_add = True' | tee -a k8sInstall/ansible.cfg"
     ]
   }
 
   provisioner "file" {
     source = "hosts_cluster_${count.index}"
-    destination = "ansible_cluster_${count.index}/hosts_cluster_${count.index}"
+    destination = "k8sInstall/hosts_cluster_${count.index}"
   }
 
   provisioner "remote-exec" {
