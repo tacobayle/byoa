@@ -1,0 +1,8 @@
+---
+- import_playbook: pbPreCheck.yml
+- import_playbook: pbInitCluster.yml
+- import_playbook: pbSystemConfig.yml
+- import_playbook: vmw/pbCloudVmw.yml
+  when: vmw is defined
+- import_playbook: vmw/pbVsVmw.yml
+  when: vmw is defined

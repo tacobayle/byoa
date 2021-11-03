@@ -1,0 +1,460 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  roles:
+    - role: "avinetworks.avisdk"
+
+  tasks:
+
+    - name: Debug
+      debug:
+        msg: "{{ avi_credentials }}"
+      tags:
+        - debug
+
+    - name: Get GSLB list
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: gslbservice
+      register: gslbserviceResults
+      ignore_errors: yes
+
+    - name: Delete Glsb services - it may fails if not executed in the leader cluster
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"gslbservice/" + item.uuid }}'
+      ignore_errors: yes
+      loop: "{{ gslbserviceResults.obj.results }}"
+
+    - name: Get GSLB profile
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: gslbgeodbprofile
+      register: gslbgeodbprofileResults
+      ignore_errors: yes
+
+    - name: Delete Glsb Geo profile - it may fails if not executed in the leader cluster
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"gslbgeodbprofile/" + item.uuid }}'
+      loop: "{{ gslbgeodbprofileResults.obj.results }}"
+      ignore_errors: yes
+
+    - name: Get GSLB config
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: gslb
+      register: gslbResults
+      ignore_errors: yes
+
+    - name: Delete Glsb config - it may fails if not executed in the leader cluster
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"gslb/" + item.uuid }}'
+      loop: "{{ gslbResults.obj.results }}"
+      ignore_errors: yes
+
+    - name: get DNS VS used by system
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: systemconfiguration
+      register: systemconfigurationOutput
+      ignore_errors: yes
+
+    - name: Delete DNS VS used by system in systemconfiguration
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: patch
+        timeout: 300
+        path: systemconfiguration
+        data: {"delete":{"dns_virtualservice_refs":["{{ item }}"]}}
+      loop: "{{ systemconfigurationOutput.obj.dns_virtualservice_refs }}"
+      when: systemconfigurationOutput.obj.dns_virtualservice_refs is defined
+      ignore_errors: yes
+
+    - name: get VS
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: virtualservice
+      register: virtualserviceResults
+      ignore_errors: yes
+
+    - name: Delete child VS config
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"virtualservice/" + item.uuid }}'
+      loop: "{{ virtualserviceResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+      when:
+        - item.type != "VS_TYPE_VH_PARENT"
+
+    - name: Delete all other VS config
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"virtualservice/" + item.uuid }}'
+      loop: "{{ virtualserviceResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+      when:
+        - item.type == "VS_TYPE_VH_PARENT"
+
+    - name: Delete all VS config
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"virtualservice/" + item.uuid }}'
+      loop: "{{ virtualserviceResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: get vsvip
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: vsvip
+      register: vsvipResults
+      ignore_errors: yes
+
+    - name: Delete vsvip config
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"vsvip/" + item.uuid }}'
+      loop: "{{ vsvipResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: get http policies
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: httppolicyset
+      register: httppolicysetResults
+      ignore_errors: yes
+
+    - name: Delete http policies
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"httppolicyset/" + item.uuid }}'
+      loop: "{{ httppolicysetResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: get l4 policies
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: l4policyset
+      register: l4policysetResults
+      ignore_errors: yes
+
+    - name: Delete l4 policies
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"l4policyset/" + item.uuid }}'
+      loop: "{{ l4policysetResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: get vs datascript
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: vsdatascriptset
+      register: vsdatascriptsetResults
+      ignore_errors: yes
+
+    - name: Delete vs datascript
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"vsdatascriptset/" + item.uuid }}'
+      loop: "{{ vsdatascriptsetResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: get pool groups
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: poolgroup
+      register: poolgroupResults
+      ignore_errors: yes
+
+    - name: Delete pool group config
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"poolgroup/" + item.uuid }}'
+      loop: "{{ poolgroupResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: get pools
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        timeout: 300
+        path: pool
+      register: poolResults
+      ignore_errors: yes
+
+    - name: Delete pool config
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"pool/" + item.uuid }}'
+      loop: "{{ poolResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: Get SE list
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: serviceengine
+      register: serviceengineResults
+      ignore_errors: yes
+
+    - name: Delete SE
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"serviceengine/" + item.uuid }}'
+      loop: "{{ serviceengineResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: Pausing for 30 seconds
+      pause:
+        seconds: 30
+
+    - name: Get SE group list
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: serviceenginegroup
+      register: serviceenginegroupResults
+      ignore_errors: yes
+
+    - name: Delete SE Groups
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"serviceenginegroup/" + item.uuid }}'
+      loop: "{{ serviceenginegroupResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: item.name != "Default-Group"
+      ignore_errors: yes
+
+    - name: Delete SE group Default-Group - vCenters dependencies
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: patch
+        timeout: 300
+        path: '{{"serviceenginegroup/" + item.uuid }}'
+        data: {"delete":{"vcenters":"{{ item.vcenters }}"}}
+      loop: "{{ serviceenginegroupResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - item.name == "Default-Group"
+        - item.vcenters is defined
+
+    - name: Get Ipam list
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: ipamdnsproviderprofile
+      register: ipamResults
+      ignore_errors: yes
+
+    - name: Remove Networks for each IPAM
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: put
+        timeout: 300
+        path: ipamdnsproviderprofile
+        data: {"name": "{{ item.name }}", "internal_profile": {"usable_networks": [] }}
+      loop: "{{ ipamResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: item.type == "IPAMDNS_TYPE_INTERNAL"
+      ignore_errors: yes
+
+    - name: Discover remaining configured networks
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "get"
+        path: network
+      register: networksResults
+      ignore_errors: yes
+
+    - name: Delete configured networks
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"network/" + item.uuid }}'
+      loop: "{{ networksResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: Pausing for 20 seconds
+      pause:
+        seconds: 20
+
+    - name: Get Clouds list
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: cloud
+      register: cloudResults
+      ignore_errors: yes
+
+    - name: Revert cloud to No Access (for vmw)
+      community.network.avi_cloud:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        name: "{{ item.name }}"
+        vtype: CLOUD_NONE
+      loop: "{{ cloudResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - item.vtype == "CLOUD_VCENTER"
+      ignore_errors: yes
+
+    - name: Get Vcenter server - NSXT
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: get
+        path: vcenterserver
+      register: vcenter_servers
+
+    - name: Delete Vcenter server - NSXT
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"vcenterserver/" + item.uuid }}'
+      loop: "{{ vcenter_servers.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: Pausing for 10 seconds
+      pause:
+        seconds: 10
+      ignore_errors: yes
+
+    - name: Discover remaining configured networks
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "get"
+        path: network
+      register: networksResults
+      ignore_errors: yes
+
+    - name: Delete configured networks
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"network/" + item.uuid }}'
+      loop: "{{ networksResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes
+
+    - name: Delete clouds
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"cloud/" + item.uuid }}'
+      loop: "{{ cloudResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: item.name != "Default-Cloud"
+      ignore_errors: yes
+
+    - name: Delete IPAM and DNS Profile
+      community.network.avi_api_session:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        http_method: "delete"
+        path: '{{"ipamdnsproviderprofile/" + item.uuid }}'
+      loop: "{{ ipamResults.obj.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ignore_errors: yes

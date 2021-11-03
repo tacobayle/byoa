@@ -1,0 +1,231 @@
+---
+- hosts: master
+  # gather_facts: yes
+  become_user: root
+  become_method: sudo
+
+  vars_files:
+    - "vars/params.yml"
+
+  tasks:
+
+    # - name: Remove swapfile from /etc/fstab
+    #   mount:
+    #     name: "{{ item }}"
+    #     fstype: swap
+    #     state: absent
+    #   with_items:
+    #     - swap
+    #     - none
+    #
+    # - name: Disable swap
+    #   command: swapoff -a
+    #   when: ansible_swaptotal_mb > 0
+
+#    - name: Install NFS package if required
+#      become: true
+#      apt:
+#        name: nfs-kernel-server
+#        update_cache: yes
+#      ignore_errors: no
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - apt
+#        - nfs
+#
+#    - name: Configure NFS FQDN
+#      become: true
+#      lineinfile:
+#        path: /etc/idmapd.conf
+#        insertafter: '^# Domain '
+#        line: Domain = master.{{ kubernetes.domain }}
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
+#
+#    - name: Create a directory for NFS shares
+#      become: true
+#      file:
+#        path: "/var/lib/{{ item.name }}"
+#        state: directory
+#        mode: '0755'
+#      loop: "{{ kubernetes.nfs }}"
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
+#
+#    - name: Configure NFS Shares
+#      become: true
+#      lineinfile:
+#        path: /etc/exports
+#        line: "/var/lib/{{ item.name }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
+#      loop: "{{ kubernetes.nfs }}"
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
+#
+## systemctl restart nfs-server
+#
+#    - name: Restart NFS server
+#      become: true
+#      shell: |
+#        systemctl restart nfs-server
+#      ignore_errors: no
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
+
+    # - name: restart NFS service
+    #   systemd:
+    #     state: restarted
+    #     daemon_reload: yes
+    #     name: nfs-server
+    #   when:
+    #     - kubernetes.nfs is defined
+    #     - kubernetesMasterIpCidr is defined
+    #     - kubernetes.domain is defined
+    #   tags:
+    #     - nfs
+
+#    - name: Docker login
+#      become: true
+#      shell: |
+#        su - "{{ kubernetes.dockerUser }}"
+#        while [ $? -ne 0 ] ; do docker login --username ${docker_registry_username} --password ${docker_registry_password} ; sleep 5 ; done
+#      ignore_errors: no
+#      when:
+#        - docker_registry_username is defined
+#        - docker_registry_password is defined
+
+    - name: Initialize the cluster
+      become: true
+      shell: |
+        ip=$(ip -f inet addr show {{ kubernetes.interface }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
+        kubeadm init --pod-network-cidr={{ kubernetes.networks.pod }} --apiserver-advertise-address $ip
+      ignore_errors: no
+      when:
+        - kubernetes.interface is defined
+        - kubernetes.networks.pod
+      tags:
+        - kubeadm
+
+    - name: Setup the kube config file for {{ kubernetes.dockerUser }}
+      become: true
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubeadm
+      with_items:
+        - mkdir -p /home/{{ kubernetes.username }}/.kube
+        - cp -i /etc/kubernetes/admin.conf /home/{{ kubernetes.username }}/.kube/config
+        - chown {{ kubernetes.username }}:{{ kubernetes.username }} /home/{{ kubernetes.username }}/.kube/config
+      when:
+        - kubernetes.username is defined
+
+#    - set_fact:
+#        docker_patch:
+#          imagePullSecrets:
+#            - name: docker
+
+
+#    - name: Pacth servce acount with docker authentication in defaultand kube-system  name space
+#      command: "{{ item }}"
+#      ignore_errors: no
+#      tags:
+#        - kubectl
+#      with_items:
+#        - kubectl create secret docker-registry docker --docker-server=docker.io --docker-username={{ docker_registry_username }} --docker-password={{ docker_registry_password }} --docker-email={{ docker_registry_email }}
+#        - kubectl patch serviceaccount default -p "{{ docker_patch | to_json }}"
+#        - kubectl create secret docker-registry docker --docker-server=docker.io --docker-username={{ docker_registry_username }} --docker-password={{ docker_registry_password }} --docker-email={{ docker_registry_email }} -n kube-system
+#        - kubectl patch serviceaccount default -p "{{ docker_patch | to_json }}" -n kube-system
+#      register: patchResult
+#      when:
+#        - docker_registry_username is defined
+#        - docker_registry_password is defined
+#        - docker_registry_password is defined
+#
+#    - name: Debug
+#      debug:
+#        msg: "{{ patchResult }}"
+#      when:
+#        - patchResult is defined
+#
+#
+
+    - name: Download yaml file - if Antrea with NPL
+      get_url:
+        url: "{{ kubernetes.cni.url }}"
+        dest: "/home/{{ kubernetes.username }}/{{ kubernetes.cni.url | basename }}"
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.username is defined
+        - kubernetes.cni.name == "antrea"
+        - kubernetes.cni.enableNPL | bool
+
+    - name: Enabling NPL - if Antrea with NPL
+      lineinfile:
+        path: "/home/{{ kubernetes.username }}/{{ kubernetes.cni.url | basename }}"
+        regexp: 'NodePortLocal: false'
+        line: '      NodePortLocal: true'
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.username is defined
+        - kubernetes.cni.name == "antrea"
+        - kubernetes.cni.enableNPL | bool
+
+    - name: Install CNI - if Antrea with NPL
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - "kubectl apply -f /home/{{ kubernetes.username }}/{{ kubernetes.cni.url | basename }}"
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.cni.name == "antrea"
+        - kubernetes.cni.enableNPL | bool
+
+    - name: Install CNI - if Antrea wo NPL
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - kubectl apply -f {{ kubernetes.cni.url }}
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.cni.name == "antrea"
+        - not kubernetes.cni.enableNPL | bool
+
+    - name: Install CNI - if not Antrea
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - kubectl apply -f {{ kubernetes.cni.url }}
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.cni.name != "antrea"
+
+    - name: Generate join command
+      command: kubeadm token create --print-join-command
+      register: join_command
+
+    - name: Copy join command to local file
+      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
