@@ -7,11 +7,11 @@
 
   tasks:
 
-    - name: Debug
-      debug:
-        msg: "{{ avi_credentials }}"
-      tags:
-        - debug
+#    - name: Debug
+#      debug:
+#        msg: "{{ avi_credentials }}"
+#      tags:
+#        - debug
 
     - name: Create vsvip for dns VS - VMW
       community.network.avi_vsvip:

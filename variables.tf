@@ -2,16 +2,26 @@
 # Environment Variables
 #
 variable "vsphere_user" {}
-variable "vsphere_password" {}
+variable "vsphere_password" {
+  sensitive = true
+}
 variable "vsphere_server" {}
 variable "avi_password" {}
 variable "avi_username" {}
 variable "avi_vsphere_user" {}
-variable "avi_vsphere_password" {}
+variable "avi_vsphere_password" {
+  sensitive = true
+}
 variable "avi_vsphere_server" {}
-variable "docker_registry_username" {}
-variable "docker_registry_password" {}
-variable "docker_registry_email" {}
+variable "docker_registry_username" {
+  sensitive = true
+}
+variable "docker_registry_password" {
+  sensitive = true
+}
+variable "docker_registry_email" {
+  sensitive = true
+}
 
 #
 # Other Variables
