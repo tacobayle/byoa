@@ -40,7 +40,7 @@ https://github.com/vmware/govmomi/tree/master/govc
 
 ## clone this repo:
 
-git clone 
+git clone https://github.com/tacobayle/byoa
 
 ## Variables:
 - define the following environment variables:

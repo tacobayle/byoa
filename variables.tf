@@ -28,7 +28,6 @@ variable "ssh_key" {
 }
 
 variable "vcenter" {
-  type = map
   default = {
     dc = "wdc-06-vc12"
     cluster = "wdc-06-vc12c01"
