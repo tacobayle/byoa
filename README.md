@@ -88,7 +88,7 @@ variable "vcenter" {
 ## Use terraform plan to:
 - Create a new folder within vCenter
 - Create a jump host within the vCenter folder
-- Create a client VM within the vCenter folder 
+- Create a client VM within the vCenter folder with Avi DNS configured as DNS server
 - Create 2 * k8s clusters:
   - 1 master node per cluster
   - 2 workers nodes per cluster
