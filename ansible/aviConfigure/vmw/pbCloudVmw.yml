@@ -40,13 +40,6 @@
       tags:
         - dns
 
-#    - pause:
-#        minutes: 5
-#      when:
-#        - vmw is defined
-#      tags:
-#        - cloud
-
     - name: Defining variable vcenter_configuration - VMW
       set_fact:
         vcenter_configuration:
@@ -274,13 +267,6 @@
       tags:
         - ipam
 
-#    - pause:
-#        minutes: 1
-#      when:
-#        - vmw is defined
-#      tags:
-#        - cloud
-
     - name: Update Avi Cloud (Vcenter)
       community.network.avi_cloud:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
@@ -293,7 +279,6 @@
         dhcp_enabled: "{{ vmw.dhcp_enabled }}"
         ipam_provider_ref: "/api/ipamdnsproviderprofile/?name={{ vmw.ipam_provider_ref | default('ipam-avi-vmw') }}"
         dns_provider_ref: "/api/ipamdnsproviderprofile/?name={{ vmw.dns_provider_ref | default('dns-avi-vmw') }}"
-#        se_group_template_ref: "/api/serviceenginegroup?name=Default-Group"
       when:
         - vmw.network_vip is defined
       tags:
