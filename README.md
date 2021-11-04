@@ -3,7 +3,7 @@
 ## Goal of this repo
 This repo spin up a full Avi environment in vCenter in conjunction with 2 * k8s clusters:
 - cluster#1 uses Calico with ClusterIP
-- cluster#2 uses Antrea with LocalNodePort)
+- cluster#2 uses Antrea with LocalNodePort
 
 ## Prerequisites:
 - Terraform:
