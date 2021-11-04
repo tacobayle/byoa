@@ -46,8 +46,13 @@ git clone https://github.com/tacobayle/byoa
   - ```docker_registry_password # this will avoid download issue when downloading docker images```
   - ```docker_registry_email # this will avoid download issue when downloading docker images```
 
-which can be defined with the following file:
+which can be defined as the example below which uses a file called env.txt
 IMPORTANT: You must verify that the variable are set. Run echo $TF_VAR_vsphere_user and make sure you get your user. 
+To load the variables use the following command:
+```
+export $(xargs <env.txt)
+```
+ENV file:
 ```
 export TF_VAR_vsphere_user=XXX
 export TF_VAR_vsphere_password=XXX
