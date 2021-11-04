@@ -32,7 +32,7 @@ variable "ssh_key" {
   default = {
     algorithm            = "RSA"
     rsa_bits             = "4096"
-    private_key_filename = "ssh.pem"
+    private_key_basename = "ssh_private_key"
     file_permission      = "0600"
   }
 }
@@ -100,6 +100,7 @@ variable "client" {
     template_name = "ubuntu-focal-20.04-cloudimg-template"
     username = "ubuntu"
     netplan_file_path = "/etc/netplan/50-cloud-init.yaml"
+    vip_ip = "10"
   }
 }
 
@@ -125,9 +126,11 @@ variable "vmw" {
       vcenter_dvs = "true"
     }
     network_vip = {
-      ipStartPool = "200" # needs to be changed if duplicate this repo
-      ipEndPool = "209" # needs to be changed if duplicate this repo
-      cidr = "100.64.133.0/24" # needs to be changed if duplicate this repo
+      vipIpStartPool = "200"
+      vipIpEndPool = "209"
+      seIpStartPool = "70"
+      seIpEndPool = "89"
+      cidr = "10.1.1.0/24" # needs to be changed if duplicate this repo
       type = "V4"
       exclude_discovered_subnets = "true"
       vcenter_dvs = "true"

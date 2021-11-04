@@ -157,36 +157,64 @@
       when:
         - vmw is defined
 
-    - name: Define Network Range IP Begin - VMW
+    - name: Define Network Range IP Begin - VMW - VIP - VIP
       set_fact:
-        ipBegin: "{{ vmw.network_vip.cidr | ipaddr(vmw.network_vip.ipStartPool) }}"
+        vipIpBegin: "{{ vmw.network_vip.cidr | ipaddr(vmw.network_vip.vipIpStartPool) }}"
       when:
         - vmw.network_vip.cidr is defined
-        - vmw.network_vip.ipStartPool is defined
+        - vmw.network_vip.vipIpStartPool is defined
 
-    - name: Define Network Range IP Begin - VMW
+    - name: Define Network Range IP Begin - VMW - VIP - VIP
       set_fact:
-        ipBegin: "{{ ipBegin.split('/')[0] }}"
+        vipIpBegin: "{{ ipBegin.split('/')[0] }}"
       when:
         - vmw.network_vip.cidr is defined
-        - vmw.network_vip.ipStartPool is defined
+        - vmw.network_vip.vipIpStartPool is defined
 
-    - name: Define Network Range IP End - VMW
+    - name: Define Network Range IP End - VMW - VIP - VIP
       set_fact:
-        ipEnd: "{{ vmw.network_vip.cidr | ipaddr(vmw.network_vip.ipEndPool) }}"
+        vipIpEnd: "{{ vmw.network_vip.cidr | ipaddr(vmw.network_vip.vipIpEndPool) }}"
       when:
         - vmw is defined
         - vmw.network_vip.cidr is defined
-        - vmw.network_vip.ipEndPool is defined
+        - vmw.network_vip.vipIpEndPool is defined
 
     - name: Define Network Range IP End - VMW
       set_fact:
-        ipEnd: "{{ ipEnd.split('/')[0] }}"
+        vipIpEnd: "{{ ipEnd.split('/')[0] }}"
       when:
         - vmw.network_vip.cidr is defined
-        - vmw.network_vip.ipEndPool is defined
+        - vmw.network_vip.vipIpEndPool is defined
 
-    - name: Define configured_subnets for network - VMW
+    - name: Define Network Range IP Begin - VMW - VIP - SE
+      set_fact:
+        seIpBegin: "{{ vmw.network_vip.cidr | ipaddr(vmw.network_vip.seIpStartPool) }}"
+      when:
+        - vmw.network_vip.cidr is defined
+        - vmw.network_vip.seIpStartPool is defined
+
+    - name: Define Network Range IP Begin - VMW - VIP - SE
+      set_fact:
+        seIpBegin: "{{ ipBegin.split('/')[0] }}"
+      when:
+        - vmw.network_vip.cidr is defined
+        - vmw.network_vip.seIpStartPool is defined
+
+    - name: Define Network Range IP End - VMW - VIP - SE
+      set_fact:
+        seIpEnd: "{{ vmw.network_vip.cidr | ipaddr(vmw.network_vip.seIpEndPool) }}"
+      when:
+        - vmw.network_vip.cidr is defined
+        - vmw.network_vip.seIpEndPool is defined
+
+    - name: Define Network Range IP End - VMW - VIP - SE
+      set_fact:
+        seIpEnd: "{{ ipEnd.split('/')[0] }}"
+      when:
+        - vmw.network_vip.cidr is defined
+        - vmw.network_vip.seIpEndPool is defined
+
+    - name: Define configured_subnets for network - VMW- VIP
       set_fact:
         configured_subnets:
           - prefix:
@@ -198,13 +226,24 @@
               - range:
                   begin:
                     type: "{{ vmw.network_vip.type | default('V4') }}"
-                    addr: "{{ ipBegin }}"
+                    addr: "{{ vipIpBegin }}"
                   end:
                     type: "{{ vmw.network_vip.type | default('V4') }}"
-                    addr: "{{ ipEnd }}"
+                    addr: "{{ vipIpEnd }}"
+                type: "STATIC_IPS_FOR_VIP"
+              - range:
+                  begin:
+                    type: "{{ vmw.network_vip.type | default('V4') }}"
+                    addr: "{{ seIpBegin }}"
+                  end:
+                    type: "{{ vmw.network_vip.type | default('V4') }}"
+                    addr: "{{ seIpEnd }}"
+                type: "STATIC_IPS_FOR_SE"
       when:
-        - ipBegin is defined
-        - ipEnd is defined
+        - vipIpBegin is defined
+        - vipIpEnd is defined
+        - seIpBegin is defined
+        - seIpEnd is defined
         - vmw.network_vip.cidr is defined
 
     - name: Update Vip Network - VMW

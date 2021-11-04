@@ -26,7 +26,7 @@ output "Avi_password" {
 }
 
 output "Destroy_command" {
-  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_filename} -t ubuntu@${vsphere_virtual_machine.jump.default_ip_address} 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @${var.controller.aviCredsJsonFile}' ; sleep 5 ; terraform destroy -auto-approve"
+  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.jump.default_ip_address} 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @${var.controller.aviCredsJsonFile}' ; sleep 5 ; terraform destroy -auto-approve"
   description = "command to destroy the infra"
 }
 
@@ -35,5 +35,5 @@ output "ako_install_command" {
 }
 
 output "ssh_connect_to_any_vm" {
-  value = "use the following to connect to any VM: ssh -i ~/.ssh/${var.ssh_key.private_key_filename} -o StrictHostKeyChecking=no ubuntu@<VM_IP>"
+  value = "use the following to connect to any VM: ssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@<VM_IP>"
 }

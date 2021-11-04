@@ -9,7 +9,7 @@ data "template_file" "jumpbox_userdata" {
     vsphere_password = var.vsphere_password
     vsphere_server = var.vsphere_server
     username = var.jump["username"]
-    privateKey = var.ssh_key.private_key_filename
+    privateKey = "${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem"
   }
 }
 
@@ -73,13 +73,13 @@ resource "vsphere_virtual_machine" "jump" {
   }
 
   provisioner "file" {
-    source      = "~/.ssh/${var.ssh_key.private_key_filename}"
-    destination = "~/.ssh/${var.ssh_key.private_key_filename}"
+    source      = "~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem"
+    destination = "~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod 600 ~/.ssh/${var.ssh_key.private_key_filename}"
+      "chmod 600 ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem"
     ]
   }
 }
