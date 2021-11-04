@@ -166,7 +166,7 @@
 
     - name: Define Network Range IP Begin - VMW - VIP - VIP
       set_fact:
-        vipIpBegin: "{{ ipBegin.split('/')[0] }}"
+        vipIpBegin: "{{ vipIpBegin.split('/')[0] }}"
       when:
         - vmw.network_vip.cidr is defined
         - vmw.network_vip.vipIpStartPool is defined
@@ -179,9 +179,9 @@
         - vmw.network_vip.cidr is defined
         - vmw.network_vip.vipIpEndPool is defined
 
-    - name: Define Network Range IP End - VMW
+    - name: Define Network Range IP End - VMW - VIP - VIP
       set_fact:
-        vipIpEnd: "{{ ipEnd.split('/')[0] }}"
+        vipIpEnd: "{{ vipIpEnd.split('/')[0] }}"
       when:
         - vmw.network_vip.cidr is defined
         - vmw.network_vip.vipIpEndPool is defined
@@ -195,7 +195,7 @@
 
     - name: Define Network Range IP Begin - VMW - VIP - SE
       set_fact:
-        seIpBegin: "{{ ipBegin.split('/')[0] }}"
+        seIpBegin: "{{ seIpBegin.split('/')[0] }}"
       when:
         - vmw.network_vip.cidr is defined
         - vmw.network_vip.seIpStartPool is defined
@@ -209,7 +209,7 @@
 
     - name: Define Network Range IP End - VMW - VIP - SE
       set_fact:
-        seIpEnd: "{{ ipEnd.split('/')[0] }}"
+        seIpEnd: "{{ seIpEnd.split('/')[0] }}"
       when:
         - vmw.network_vip.cidr is defined
         - vmw.network_vip.seIpEndPool is defined
