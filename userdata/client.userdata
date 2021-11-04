@@ -32,7 +32,7 @@ write_files:
       echo "            dhcp4-overrides:" | sudo tee -a ${netplan_file_path}
       echo "              use-dns: false" | sudo tee -a ${netplan_file_path}
       echo "            nameservers:" | sudo tee -a ${netplan_file_path}
-      echo "              addresses: [avi_dns_vs]" | sudo tee -a ${netplan_file_path}
+      echo "              addresses: [${avi_dns_vs}]" | sudo tee -a ${netplan_file_path}
       echo "    version: 2" | sudo tee -a ${netplan_file_path}
       sudo netplan apply
       echo "cloud init done" | tee /tmp/cloudInitDone.log
