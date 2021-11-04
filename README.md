@@ -4,8 +4,11 @@
 This repo spin up a full Avi environment in vCenter in conjunction with 2 * k8s clusters:
 - cluster#1 uses Calico with ClusterIP
 - cluster#2 uses Antrea with LocalNodePort
+- Every machine is using DCHP so no static IPs is used
+
 
 ## Prerequisites:
+A Jumpbox which has terraform installed
 - Terraform:
 ```shell
 ubuntu@ubuntuguest:~/bash_byoa$ terraform -v
@@ -22,6 +25,8 @@ https://learn.hashicorp.com/tutorials/terraform/install-cli
     - management network defined in vcenter.management_network.name
     - k8s network defined in vcenter.k8s_network.name
 
+## VM Templates
+This lab is using the template under the Nicolas folder templates and it is using ubuntu-bionic-18.04-cloudimg-template
 
 ## clone this repo:
 
@@ -42,7 +47,7 @@ git clone https://github.com/tacobayle/byoa
   - ```docker_registry_email # this will avoid download issue when downloading docker images```
 
 which can be defined with the following file:
-
+IMPORTANT: You must verify that the variable are set. Run echo $TF_VAR_vsphere_user and make sure you get your user. 
 ```
 export TF_VAR_vsphere_user=XXX
 export TF_VAR_vsphere_password=XXX
@@ -104,7 +109,7 @@ export TF_VAR_docker_registry_username=XXX
 - Configure Avi Controller:
   - Bootstrap Avi Controller (Password, NTP, DNS)
   - VMW cloud
-  - Service Engine Groups (Default SEG is used for VMware Cloud and by cluster#2), a dedicated SEG is configured for cluster#1
+  - Service Engine Groups (Default SEG is used for VMware Cloud and by cluster#2), a dedicated SEG is configured for cluster#1 
   - DNS VS is used in order to demonstrate FQDN registration reachable outside k8s cluster
   
 
@@ -117,6 +122,10 @@ terraform apply -auto-approve -var-file=vcenter.json
 - destroy:
 ```
 use the command provided by terraform output
+```
+The terraform output should look similar to the following:
+```
+ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_private_key-remo_ako.pem -t ubuntu@100.206.114.98 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @~/.avicreds.json' ; sleep 5 ; terraform destroy -auto-approve -var-file=vcenter.json
 ```
 
 ## Demonstrate Ako
