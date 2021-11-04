@@ -15,7 +15,7 @@ data "vsphere_virtual_machine" "client" {
 }
 
 resource "vsphere_virtual_machine" "client" {
-  name             = "${var.vcenter.folder}-${var.client.name}"
+  name             = var.client.name
   datastore_id     = data.vsphere_datastore.datastore.id
   resource_pool_id = data.vsphere_resource_pool.pool.id
   folder           = vsphere_folder.folder.path
