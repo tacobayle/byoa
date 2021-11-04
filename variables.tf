@@ -37,24 +37,7 @@ variable "ssh_key" {
   }
 }
 
-variable "vcenter" {
-  default = {
-    dc = "wdc-06-vc12"
-    cluster = "wdc-06-vc12c01"
-    datastore = "wdc-06-vc12c01-vsan"
-    resource_pool = "wdc-06-vc12c01/Resources"
-    folder = "Nic_K8S" # needs to be changed if duplicate this repo
-    management_network = {
-      name = "vxw-dvs-34-virtualwire-3-sid-6120002-wdc-06-vc12-avi-mgmt"
-    }
-    vip_network = {
-      name = "vxw-dvs-34-virtualwire-120-sid-6120119-wdc-06-vc12-avi-dev116"
-    }
-    k8s_network = {
-      name = "vxw-dvs-34-virtualwire-116-sid-6120115-wdc-06-vc12-avi-dev112"
-    }
-  }
-}
+variable "vcenter" {}
 
 variable "controller" {
   default = {
@@ -130,7 +113,6 @@ variable "vmw" {
       vipIpEndPool = "209"
       seIpStartPool = "70"
       seIpEndPool = "89"
-      cidr = "10.1.1.0/24" # needs to be changed if duplicate this repo
       type = "V4"
       exclude_discovered_subnets = "true"
       vcenter_dvs = "true"

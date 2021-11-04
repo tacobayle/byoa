@@ -109,14 +109,14 @@ resource "null_resource" "update_ip_to_client" {
       "echo \"              use-dns: false\" | sudo tee -a ${var.client.netplan_file_path}",
       "echo \"        $ifaceLastName:\" | sudo tee -a ${var.client.netplan_file_path}",
       "echo \"            dhcp4: false\" | sudo tee -a ${var.client.netplan_file_path}",
-      "echo \"            addresses: [${cidrhost(var.vmw.network_vip.cidr, var.client.vip_ip)}/${split("/", var.vmw.network_vip.cidr)[1]}]\" | sudo tee -a ${var.client.netplan_file_path}",
+      "echo \"            addresses: [${cidrhost(var.vcenter.network_vip.cidr, var.client.vip_ip)}/${split("/", var.vcenter.network_vip.cidr)[1]}]\" | sudo tee -a ${var.client.netplan_file_path}",
       "echo \"            match:\" | sudo tee -a ${var.client.netplan_file_path}",
       "echo \"                macaddress: $macLast\" | sudo tee -a ${var.client.netplan_file_path}",
       "echo \"            set-name: $ifaceLastName\" | sudo tee -a ${var.client.netplan_file_path}",
 //      "echo \"            dhcp4-overrides:\" | sudo tee -a ${var.client.netplan_file_path}",
 //      "echo \"              use-dns: false\" | sudo tee -a ${var.client.netplan_file_path}",
       "echo \"            nameservers:\" | sudo tee -a ${var.client.netplan_file_path}",
-      "echo \"              addresses: [${cidrhost(var.vmw.network_vip.cidr, var.vmw.network_vip.vipIpStartPool)}]\" | sudo tee -a ${var.client.netplan_file_path}",
+      "echo \"              addresses: [${cidrhost(var.vcenter.network_vip.cidr, var.vmw.network_vip.vipIpStartPool)}]\" | sudo tee -a ${var.client.netplan_file_path}",
       "echo \"    version: 2\" | sudo tee -a ${var.client.netplan_file_path}",
       "sudo netplan apply"
     ]
