@@ -78,7 +78,7 @@ resource "vsphere_virtual_machine" "jump" {
   }
 
   provisioner "file" {
-    source      = "~/bash/destroyAvi.sh"
+    source      = "bash/destroyAvi.sh"
     destination = "~/destroyAvi.sh"
   }
 
