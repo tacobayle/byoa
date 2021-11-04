@@ -22,6 +22,11 @@ data "vsphere_network" "networkMgt" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
+data "vsphere_network" "networkVip" {
+  name = var.vcenter.vip_network.name
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
 data "vsphere_network" "networkMaster" {
   name = var.vcenter.k8s_network.name
   datacenter_id = data.vsphere_datacenter.dc.id
