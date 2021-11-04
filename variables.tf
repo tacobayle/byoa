@@ -108,7 +108,7 @@ variable "vmw" {
       exclude_discovered_subnets = "true"
       vcenter_dvs = "true"
     }
-    network_vip = {
+    vip_network = {
       vipIpStartPool = "200"
       vipIpEndPool = "209"
       seIpStartPool = "70"

@@ -159,84 +159,84 @@
 
     - name: Define Network Range IP Begin - VMW - VIP - VIP
       set_fact:
-        vipIpBegin: "{{ vcenter.network_vip.cidr | ipaddr(vmw.network_vip.vipIpStartPool) }}"
+        vipIpBegin: "{{ vcenter.vip_network.cidr | ipaddr(vmw.vip_network.vipIpStartPool) }}"
       when:
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.vipIpStartPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.vipIpStartPool is defined
 
     - name: Define Network Range IP Begin - VMW - VIP - VIP
       set_fact:
         vipIpBegin: "{{ vipIpBegin.split('/')[0] }}"
       when:
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.vipIpStartPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.vipIpStartPool is defined
 
     - name: Define Network Range IP End - VMW - VIP - VIP
       set_fact:
-        vipIpEnd: "{{ vcenter.network_vip.cidr | ipaddr(vmw.network_vip.vipIpEndPool) }}"
+        vipIpEnd: "{{ vcenter.vip_network.cidr | ipaddr(vmw.vip_network.vipIpEndPool) }}"
       when:
         - vmw is defined
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.vipIpEndPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.vipIpEndPool is defined
 
     - name: Define Network Range IP End - VMW - VIP - VIP
       set_fact:
         vipIpEnd: "{{ vipIpEnd.split('/')[0] }}"
       when:
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.vipIpEndPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.vipIpEndPool is defined
 
     - name: Define Network Range IP Begin - VMW - VIP - SE
       set_fact:
-        seIpBegin: "{{ vcenter.network_vip.cidr | ipaddr(vmw.network_vip.seIpStartPool) }}"
+        seIpBegin: "{{ vcenter.vip_network.cidr | ipaddr(vmw.vip_network.seIpStartPool) }}"
       when:
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.seIpStartPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.seIpStartPool is defined
 
     - name: Define Network Range IP Begin - VMW - VIP - SE
       set_fact:
         seIpBegin: "{{ seIpBegin.split('/')[0] }}"
       when:
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.seIpStartPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.seIpStartPool is defined
 
     - name: Define Network Range IP End - VMW - VIP - SE
       set_fact:
-        seIpEnd: "{{ vcenter.network_vip.cidr | ipaddr(vmw.network_vip.seIpEndPool) }}"
+        seIpEnd: "{{ vcenter.vip_network.cidr | ipaddr(vmw.vip_network.seIpEndPool) }}"
       when:
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.seIpEndPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.seIpEndPool is defined
 
     - name: Define Network Range IP End - VMW - VIP - SE
       set_fact:
         seIpEnd: "{{ seIpEnd.split('/')[0] }}"
       when:
-        - vcenter.network_vip.cidr is defined
-        - vmw.network_vip.seIpEndPool is defined
+        - vcenter.vip_network.cidr is defined
+        - vmw.vip_network.seIpEndPool is defined
 
     - name: Define configured_subnets for network - VMW- VIP
       set_fact:
         configured_subnets:
           - prefix:
-              mask: "{{ vcenter.network_vip.cidr.split('/')[1] }}"
+              mask: "{{ vcenter.vip_network.cidr.split('/')[1] }}"
               ip_addr:
-                type: "{{ vmw.network_vip.type | default('V4') }}"
-                addr: "{{ vcenter.network_vip.cidr.split('/')[0] }}"
+                type: "{{ vmw.vip_network.type | default('V4') }}"
+                addr: "{{ vcenter.vip_network.cidr.split('/')[0] }}"
             static_ip_ranges:
               - range:
                   begin:
-                    type: "{{ vmw.network_vip.type | default('V4') }}"
+                    type: "{{ vmw.vip_network.type | default('V4') }}"
                     addr: "{{ vipIpBegin }}"
                   end:
-                    type: "{{ vmw.network_vip.type | default('V4') }}"
+                    type: "{{ vmw.vip_network.type | default('V4') }}"
                     addr: "{{ vipIpEnd }}"
                 type: "STATIC_IPS_FOR_VIP"
               - range:
                   begin:
-                    type: "{{ vmw.network_vip.type | default('V4') }}"
+                    type: "{{ vmw.vip_network.type | default('V4') }}"
                     addr: "{{ seIpBegin }}"
                   end:
-                    type: "{{ vmw.network_vip.type | default('V4') }}"
+                    type: "{{ vmw.vip_network.type | default('V4') }}"
                     addr: "{{ seIpEnd }}"
                 type: "STATIC_IPS_FOR_SE"
       when:
@@ -244,7 +244,7 @@
         - vipIpEnd is defined
         - seIpBegin is defined
         - seIpEnd is defined
-        - vcenter.network_vip.cidr is defined
+        - vcenter.vip_network.cidr is defined
 
     - name: Update Vip Network - VMW
       community.network.avi_network:
@@ -254,12 +254,12 @@
         tenant_ref: "/api/tenant?name={{ item.tenant_ref | default('admin') }}"
         name: "{{ vcenter.vip_network.name }}"
         configured_subnets: "{{ configured_subnets }}"
-        dhcp_enabled: "{{ vmw.network_vip.dhcp_enabled }}"
-        exclude_discovered_subnets: "{{ vmw.network_vip.exclude_discovered_subnets }}"
-        vcenter_dvs: "{{ vmw.network_vip.vcenter_dvs }}"
-      register: output_network_vip_vmw
+        dhcp_enabled: "{{ vmw.vip_network.dhcp_enabled }}"
+        exclude_discovered_subnets: "{{ vmw.vip_network.exclude_discovered_subnets }}"
+        vcenter_dvs: "{{ vmw.vip_network.vcenter_dvs }}"
+      register: output_vip_network_vmw
       when:
-        - vmw.network_vip is defined
+        - vmw.vip_network is defined
       tags:
         - ipam
 
@@ -298,11 +298,11 @@
         api_context: "{{ avi_api_context | default(omit) }}"
         internal_profile:
           usable_networks:
-            - nw_ref: "/api/network/{{ output_network_vip_vmw.obj.uuid | default(networkVipUuid) }}"
+            - nw_ref: "/api/network/{{ output_vip_network_vmw.obj.uuid | default(networkVipUuid) }}"
         name: "{{ vmw.ipam_provider_ref | default('ipam-avi-vmw') }}"
         type: IPAMDNS_TYPE_INTERNAL
       when:
-        - vmw.network_vip is defined
+        - vmw.vip_network is defined
       tags:
         - ipam
 
@@ -319,7 +319,7 @@
         ipam_provider_ref: "/api/ipamdnsproviderprofile/?name={{ vmw.ipam_provider_ref | default('ipam-avi-vmw') }}"
         dns_provider_ref: "/api/ipamdnsproviderprofile/?name={{ vmw.dns_provider_ref | default('dns-avi-vmw') }}"
       when:
-        - vmw.network_vip is defined
+        - vmw.vip_network is defined
       tags:
         - cloud
         - ipam
