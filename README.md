@@ -8,6 +8,7 @@ This repo spin up a full Avi environment in vCenter in conjunction with 2 * k8s 
 ## Prerequisites:
 - Terraform:
 ```shell
+ubuntu@ubuntuguest:~/bash_byoa$ terraform -v
 Terraform v1.0.6
 on linux_amd64
 ```
