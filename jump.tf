@@ -77,9 +77,21 @@ resource "vsphere_virtual_machine" "jump" {
     destination = "~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem"
   }
 
+  provisioner "file" {
+    source      = "~/bash/destroyAvi.sh"
+    destination = "~/destroyAvi.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "chmod 600 ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem"
     ]
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod u+x ~/destroyAvi.sh"
+    ]
+  }
+
 }
