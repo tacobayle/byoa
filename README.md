@@ -1,7 +1,7 @@
 # byoa (Bring your Own AKO Demo)
 
 ## Goal of this repo
-This repo spin up a full Avi environment in vCenter in conjunction with 2 * k8s clusters:
+This repo spin up a full Avi environment in vCenter in conjunction with 2 * k8s clusters in order to demonstrate AKO:
 - cluster#1 uses Calico with ClusterIP
 - cluster#2 uses Antrea with LocalNodePort
 
