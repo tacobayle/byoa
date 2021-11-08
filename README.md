@@ -133,7 +133,7 @@ The terraform output should look similar to the following:
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_private_key-remo_ako.pem -t ubuntu@100.206.114.98 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @~/.avicreds.json' ; sleep 5 ; terraform destroy -auto-approve -var-file=vcenter.json
 ```
 
-## Demonstrate Ako
+## Demonstrate AKO
 - Warnings: 
   - the SE takes few minutes to come up
   - an alias has been created to use "k" instead of "kubectl" command
