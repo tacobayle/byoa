@@ -61,7 +61,7 @@ variable "controller" {
 variable "jump" {
   type = map
   default = {
-    name = "jump"
+    name = "destroy-env-vm"
     cpu = 2
     memory = 4096
     disk = 20
@@ -75,7 +75,7 @@ variable "jump" {
 variable "client" {
   type = map
   default = {
-    name = "client"
+    name = "demo-client"
     cpu = 2
     memory = 4096
     disk = 20
