@@ -10,7 +10,7 @@ This repo spin up a full Avi environment in vCenter in conjunction with 2 \* k8s
 
 ## Prerequisites:
 
-A Jumpbox which has terraform installed
+A VM which has terraform installed
 
 - Terraform:
 

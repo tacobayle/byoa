@@ -8,8 +8,8 @@ output "workers_K8s" {
   value = vsphere_virtual_machine.worker.*.default_ip_address
 }
 
-output "jump_VM" {
-  value = vsphere_virtual_machine.jump.default_ip_address
+output "destroy_env_vm_VM" {
+  value = vsphere_virtual_machine.destroy_env_vm.default_ip_address
 }
 
 output "client_VM" {
@@ -26,12 +26,12 @@ output "Avi_password" {
 }
 
 output "Destroy_command" {
-  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.jump.default_ip_address} 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @${var.controller.aviCredsJsonFile}' ; sleep 5 ; terraform destroy -auto-approve -var-file=vcenter.json"
+  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.destroy_env_vm.default_ip_address} 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @${var.controller.aviCredsJsonFile}' ; sleep 5 ; terraform destroy -auto-approve -var-file=vcenter.json"
   description = "command to destroy the infra"
 }
 
 output "Destroy_command_wo_tf" {
-  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.jump.default_ip_address} './destroyAvi.sh'"
+  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.destroy_env_vm.default_ip_address} './destroyAvi.sh'"
   description = "command to destroy the avi config"
 }
 

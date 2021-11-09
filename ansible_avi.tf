@@ -14,12 +14,12 @@ resource "null_resource" "ansible_hosts_avi_controllers" {
 
 
 resource "null_resource" "ansible_avi" {
-  depends_on = [vsphere_virtual_machine.jump, vsphere_virtual_machine.master, vsphere_virtual_machine.worker, null_resource.ansible_hosts_avi_header_1, null_resource.ansible_bootstrap_cluster]
+  depends_on = [vsphere_virtual_machine.destroy_env_vm, vsphere_virtual_machine.master, vsphere_virtual_machine.worker, null_resource.ansible_hosts_avi_header_1, null_resource.ansible_bootstrap_cluster]
   connection {
-    host = vsphere_virtual_machine.jump.default_ip_address
+    host = vsphere_virtual_machine.destroy_env_vm.default_ip_address
     type = "ssh"
     agent = false
-    user = var.jump.username
+    user = var.destroy_env_vm.username
     private_key = tls_private_key.ssh.private_key_pem
   }
 

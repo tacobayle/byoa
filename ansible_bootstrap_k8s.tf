@@ -31,13 +31,13 @@ resource "null_resource" "ansible_hosts_cluster_static2" {
 
 
 resource "null_resource" "ansible_bootstrap_cluster" {
-  depends_on = [null_resource.ansible_hosts_cluster_static2, vsphere_virtual_machine.jump]
+  depends_on = [null_resource.ansible_hosts_cluster_static2, vsphere_virtual_machine.destroy_env_vm]
   count = length(var.vmw.kubernetes.clusters)
   connection {
-    host = vsphere_virtual_machine.jump.default_ip_address
+    host = vsphere_virtual_machine.destroy_env_vm.default_ip_address
     type = "ssh"
     agent = false
-    user = var.jump.username
+    user = var.destroy_env_vm.username
     private_key = tls_private_key.ssh.private_key_pem
   }
 
@@ -49,7 +49,7 @@ resource "null_resource" "ansible_bootstrap_cluster" {
   provisioner "remote-exec" {
     inline = [
       "echo '[defaults]' | tee k8sInstall/ansible.cfg",
-      "echo 'private_key_file = /home/${var.jump.username}/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem' | tee -a k8sInstall/ansible.cfg",
+      "echo 'private_key_file = /home/${var.destroy_env_vm.username}/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem' | tee -a k8sInstall/ansible.cfg",
       "echo 'host_key_checking = False' | tee -a k8sInstall/ansible.cfg",
       "echo 'host_key_auto_add = True' | tee -a k8sInstall/ansible.cfg"
     ]
