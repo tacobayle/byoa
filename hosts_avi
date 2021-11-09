@@ -1,0 +1,6 @@
+---
+all:
+  children:
+    controller:
+      hosts:
+        10.206.115.1:

@@ -1,0 +1,12 @@
+---
+all:
+  children:
+    master:
+      hosts:
+        10.206.114.44:
+    workers:
+      hosts:
+        10.206.115.148:
+        10.206.114.134:
+  vars:
+    ansible_user: ubuntu
