@@ -41,7 +41,7 @@ resource "null_resource" "ansible_avi" {
   provisioner "remote-exec" {
     inline = [
       "cd aviConfigure",
-      "ansible-playbook -i ../hosts_avi local.yml --extra-vars '{\"vcenter\": ${jsonencode(var.vcenter)}, \"vmw\": ${jsonencode(var.vmw)}, \"avi_vsphere_password\": ${jsonencode(var.avi_vsphere_password)}, \"avi_vsphere_server\": ${jsonencode(var.avi_vsphere_server)}, \"avi_vsphere_user\": ${jsonencode(var.avi_vsphere_user)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}, \"avi_version\": ${split("-", var.controller.version)[0]}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"controller\": ${jsonencode(var.controller)}}'"
+      "ansible-playbook -i ../hosts_avi local.yml --extra-vars '{\"vcenter\": ${jsonencode(var.vcenter)}, \"vmw\": ${jsonencode(var.vmw)}, \"vsphere_password\": ${jsonencode(var.vsphere_password)}, \"avi_vsphere_server\": ${jsonencode(var.avi_vsphere_server)}, \"vsphere_user\": ${jsonencode(var.vsphere_user)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}, \"avi_version\": ${split("-", var.controller.version)[0]}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"controller\": ${jsonencode(var.controller)}}'"
     ]
   }
 }

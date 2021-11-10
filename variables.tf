@@ -8,10 +8,7 @@ variable "vsphere_password" {
 variable "vsphere_server" {}
 variable "avi_password" {}
 variable "avi_username" {}
-variable "avi_vsphere_user" {}
-variable "avi_vsphere_password" {
-  sensitive = true
-}
+
 variable "avi_vsphere_server" {}
 variable "docker_registry_username" {
   sensitive = true
@@ -45,7 +42,7 @@ variable "controller" {
     memory = 32768
     disk = 256
     cluster = false
-    version = "21.1.1-9045"
+    version = "21.1.2-9124"
     wait_for_guest_net_timeout = 4
     environment = "VMWARE"
     dns =  ["10.206.8.130", "10.206.8.131"]

@@ -32,7 +32,10 @@ https://learn.hashicorp.com/tutorials/terraform/install-cli
 
 ## VM Templates
 
-This lab is using the template under the Nicolas folder templates and it is using ubuntu-bionic-18.04-cloudimg-template
+This lab is using the template under the Nicolas folder templates which contains:
+- ubuntu-bionic-18.04-cloudimg-template
+- ubuntu-focal-20.04-cloudimg-template
+- controller-20.1.2-9171-template
 
 ## clone this repo:
 
@@ -46,8 +49,6 @@ git clone https://github.com/tacobayle/byoa
   - `vsphere_server`
   - `avi_password`
   - `avi_username`
-  - `avi_vsphere_user`
-  - `avi_vsphere_password`
   - `avi_vsphere_server # use IP and not FQDN`
   - `docker_registry_username # this will avoid download issue when downloading docker images`
   - `docker_registry_password # this will avoid download issue when downloading docker images`
@@ -73,8 +74,6 @@ export TF_VAR_vsphere_server=XXX
 export TF_VAR_avi_password=XXX
 export TF_VAR_avi_username=XXX
 
-export TF_VAR_avi_vsphere_user=XXX
-export TF_VAR_avi_vsphere_password=XXX
 export TF_VAR_avi_vsphere_server=XXX
 
 
