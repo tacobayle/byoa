@@ -65,7 +65,7 @@ resource "null_resource" "K8s_sanity_check" {
   }
 
   provisioner "local-exec" {
-    command = "cat > K8s_sanity_check.sh <<EOL\n${data.template_file.K8s_sanity_check}\nEOL"
+    command = "cat > K8s_sanity_check.sh <<EOL\n${data.template_file.K8s_sanity_check.rendered}\nEOL"
   }
 
   provisioner "file" {
