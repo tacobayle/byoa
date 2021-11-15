@@ -39,5 +39,5 @@ output "ako_install_command" {
 }
 
 output "ssh_connect_to_any_vm" {
-  value = "use the following to connect to any VM: ssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@<VM_IP>\n"
+  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@<VM_IP>\n"
 }
