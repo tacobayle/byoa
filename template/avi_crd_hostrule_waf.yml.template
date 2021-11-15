@@ -1,7 +1,7 @@
 apiVersion: ako.vmware.com/v1alpha1
 kind: HostRule
 metadata:
-  name: my-host-rule1
+  name: avi_crd_hostrule_waf
   namespace: default
 spec:
   virtualhost:

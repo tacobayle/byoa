@@ -234,9 +234,9 @@ ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_private_key-remo_ako.pem -t ubuntu
     ```
     k apply -f avi_crd_hostrule_tls_cert.yml
     ```
-  - Verify your host CRD rule:
+  - Verify your host CRD rule status:
     ```shell
-    # placeholder
+    k get HostRule avi_crd_hostrule_tls_cert -o json | jq .status.status
     ```
   - this triggers a new VS (child VS) in the Avi controller
   - you can check this new application by connecting/sshing to your client_demo VM and doing something like:
@@ -262,8 +262,8 @@ ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_private_key-remo_ako.pem -t ubuntu
     ```
     k apply -f avi_crd_hostrule_waf.yml
     ```
-  - Verify your host CRD rule:
+  - Verify your host CRD rule status:
     ```shell
-    # placeholder
+    k get HostRule  avi_crd_hostrule_waf -o json | jq .status.status
     ```  
   - this triggers a WAF policy which will be attached to the child VS in the Avi controller
