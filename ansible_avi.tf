@@ -45,3 +45,37 @@ resource "null_resource" "ansible_avi" {
     ]
   }
 }
+
+data "template_file" "K8s_sanity_check" {
+  template = file("template/K8s_check.sh.template")
+  vars = {
+    nodes = var.vmw.kubernetes.workers.count + 1
+  }
+}
+
+resource "null_resource" "K8s_sanity_check" {
+  depends_on = [null_resource.ansible_avi]
+  count = length(var.vmw.kubernetes.clusters)
+  connection {
+    host = vsphere_virtual_machine.master[count.index].default_ip_address
+    type = "ssh"
+    agent = false
+    user = var.vmw.kubernetes.clusters[count.index].username
+    private_key = tls_private_key.ssh.private_key_pem
+  }
+
+  provisioner "local-exec" {
+    command = "cat > K8s_sanity_check.sh <<EOL\n${data.template_file.K8s_sanity_check}\nEOL"
+  }
+
+  provisioner "file" {
+    source = "K8s_sanity_check.sh"
+    destination = "K8s_sanity_check.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "/bin/bash K8s_sanity_check.sh",
+    ]
+  }
+}
