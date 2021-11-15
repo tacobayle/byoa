@@ -1,11 +1,11 @@
 # Outputs for Terraform
 
 output "master_K8s" {
-  value = "${vsphere_virtual_machine.master.*.default_ip_address}\n"
+  value = vsphere_virtual_machine.master.*.default_ip_address
 }
 
 output "workers_K8s" {
-  value = "${vsphere_virtual_machine.worker.*.default_ip_address}\n"
+  value = vsphere_virtual_machine.worker.*.default_ip_address
 }
 
 //output "destroy_env_vm_VM" {
@@ -13,29 +13,29 @@ output "workers_K8s" {
 //}
 
 output "client_VM" {
-  value = "${vsphere_virtual_machine.client.default_ip_address}\n"
+  value = vsphere_virtual_machine.client.default_ip_address
 }
 
 output "Avi_controllers" {
-  value = "${vsphere_virtual_machine.controller.*.default_ip_address}\n"
+  value = vsphere_virtual_machine.controller.*.default_ip_address
 }
 
 output "Avi_password" {
-  value = "${var.avi_password}\n"
+  value = var.avi_password
 }
 
 output "Destroy_command_all" {
-  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.destroy_env_vm.default_ip_address} 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @${var.controller.aviCredsJsonFile}' ; sleep 5 ; terraform destroy -auto-approve -var-file=vcenter.json\n"
+  value = "\nssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.destroy_env_vm.default_ip_address} 'cd aviAbsent ; ansible-playbook local.yml --extra-vars @${var.controller.aviCredsJsonFile}' ; sleep 5 ; terraform destroy -auto-approve -var-file=vcenter.json\n"
   description = "command to destroy the infra"
 }
 
 output "Destroy_command_wo_tf" {
-  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.destroy_env_vm.default_ip_address} './destroyAvi.sh'\n"
+  value = "\nssh -o StrictHostKeyChecking=no -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -t ubuntu@${vsphere_virtual_machine.destroy_env_vm.default_ip_address} './destroyAvi.sh'\n"
   description = "command to destroy the avi config"
 }
 
 output "ako_install_command" {
-  value = "helm --debug install ako/ako --generate-name --version ${var.vmw.kubernetes.clusters[0].ako.version} -f values.yml --namespace=${var.vmw.kubernetes.clusters[0].ako.namespace} --set avicredentials.username=admin --set avicredentials.password=$avi_password\n"
+  value = "\nhelm --debug install ako/ako --generate-name --version ${var.vmw.kubernetes.clusters[0].ako.version} -f values.yml --namespace=${var.vmw.kubernetes.clusters[0].ako.namespace} --set avicredentials.username=admin --set avicredentials.password=$avi_password\n"
 }
 
 output "ssh_connect_to_any_vm" {
