@@ -1,17 +1,17 @@
 #!/bin/bash
-if [ $(kubectl get nodes -o json  | jq .items | jq length) -eq "${nodes}" ] ; then
+if [ \$(kubectl get nodes -o json  | jq .items | jq length) -eq "${nodes}" ] ; then
   echo "Amount of K8s nodes OK"
 else
   exit 1
 fi
 IFS=$'\n'
-for status_node in $(kubectl get nodes -o json  | jq -r -c .items[] | jq -c -r .status.conditions)
+for status_node in \$(kubectl get nodes -o json  | jq -r -c .items[] | jq -c -r .status.conditions)
   do
     echo "-----Status Node-----"
-    for status in $(echo $status_node | jq -r -c .[])
+    for status in \$(echo $status_node | jq -r -c .[])
       do
-        if [[ $(echo $status | jq -r .type) == "Ready" ]] ; then
-          if [[ $(echo $status | jq -r .status) == "True" ]] ; then
+        if [[ \$(echo $status | jq -r .type) == "Ready" ]] ; then
+          if [[ \$(echo $status | jq -r .status) == "True" ]] ; then
             echo "Node is Ready"
           else
             echo "Node is not ready"

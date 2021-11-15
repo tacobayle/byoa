@@ -43,26 +43,26 @@ resource "null_resource" "ansible_bootstrap_cluster" {
 
   provisioner "file" {
     source = "ansible/k8sInstall"
-    destination = "k8sInstall"
+    destination = "k8sInstall_${count.index}"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "echo '[defaults]' | tee k8sInstall/ansible.cfg",
-      "echo 'private_key_file = /home/${var.destroy_env_vm.username}/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem' | tee -a k8sInstall/ansible.cfg",
-      "echo 'host_key_checking = False' | tee -a k8sInstall/ansible.cfg",
-      "echo 'host_key_auto_add = True' | tee -a k8sInstall/ansible.cfg"
+      "echo '[defaults]' | tee k8sInstall_${count.index}/ansible.cfg",
+      "echo 'private_key_file = /home/${var.destroy_env_vm.username}/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem' | tee -a k8sInstall_${count.index}/ansible.cfg",
+      "echo 'host_key_checking = False' | tee -a k8sInstall_${count.index}/ansible.cfg",
+      "echo 'host_key_auto_add = True' | tee -a k8sInstall_${count.index}/ansible.cfg"
     ]
   }
 
   provisioner "file" {
     source = "hosts_cluster_${count.index}"
-    destination = "k8sInstall/hosts_cluster_${count.index}"
+    destination = "k8sInstall_${count.index}/hosts_cluster_${count.index}"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "cd k8sInstall; ansible-playbook -i hosts_cluster_${count.index} main.yml --extra-vars '{\"kubernetes\": ${jsonencode(var.vmw.kubernetes.clusters[count.index])}}'"
+      "cd k8sInstall_${count.index}; ansible-playbook -i hosts_cluster_${count.index} main.yml --extra-vars '{\"kubernetes\": ${jsonencode(var.vmw.kubernetes.clusters[count.index])}}'"
     ]
   }
 }
