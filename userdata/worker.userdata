@@ -42,7 +42,7 @@ write_files:
       su - ${username}
       ping www.google.com -c 1
       ping foo -c 1
-      while [ $? -ne 0 ] ; do docker login --username ${docker_registry_username} --password ${docker_registry_password} ; sleep 5 ; done
+      while [ $? -ne 0 ] ; do sleep 5 ; docker login --username ${docker_registry_username} --password ${docker_registry_password}  ; done
       #
       # cni image download
       #
