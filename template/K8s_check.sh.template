@@ -5,7 +5,7 @@ else
   exit 1
 fi
 IFS=$'\n'
-for status_node in \$(kubectl get nodes -o json  | jq -r -c .items[] | jq -c .status.conditions)
+for status_node in \$(kubectl get nodes -o json  2> /dev/null | jq -r -c .items[] | jq -c .status.conditions)
   do
     echo "-----Status Node-----"
     echo $status_node
