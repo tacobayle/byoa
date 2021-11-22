@@ -1,10 +1,10 @@
 # Outputs for Terraform
 
-output "master_K8s" {
-  value = vsphere_virtual_machine.master.*.default_ip_address
-}
+//output "master_K8s_IPs" {
+//  value = vsphere_virtual_machine.master.*.default_ip_address
+//}
 
-output "workers_K8s" {
+output "workers_K8s_IPs" {
   value = vsphere_virtual_machine.worker.*.default_ip_address
 }
 
@@ -12,9 +12,9 @@ output "workers_K8s" {
 //  value = vsphere_virtual_machine.destroy_env_vm.default_ip_address
 //}
 
-output "client_VM" {
-  value = vsphere_virtual_machine.client.default_ip_address
-}
+//output "client_VM_IP" {
+//  value = vsphere_virtual_machine.client.default_ip_address
+//}
 
 output "Avi_controllers" {
   value = vsphere_virtual_machine.controller.*.default_ip_address
@@ -34,8 +34,20 @@ output "Destroy_command_wo_tf" {
   description = "command to destroy the avi config"
 }
 
-output "ako_install_command" {
+output "ako_install_command_to_apply_on_master_node" {
   value = "\nhelm --debug install ako/ako --generate-name --version ${var.vmw.kubernetes.clusters[0].ako.version} -f values.yml --namespace=${var.vmw.kubernetes.clusters[0].ako.namespace} --set avicredentials.username=admin --set avicredentials.password=$avi_password\n"
+}
+
+output "ssh_connect_to_client_VM" {
+  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@vsphere_virtual_machine.client.default_ip_address\n"
+}
+
+output "ssh_connect_to_client_K8s_cluster1_master_node" {
+  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@vsphere_virtual_machine.worker[0]default_ip_address\n"
+}
+
+output "ssh_connect_to_client_K8s_cluster2_master_node" {
+  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@vsphere_virtual_machine.worker[1]default_ip_address\n"
 }
 
 output "ssh_connect_to_any_vm" {
