@@ -39,15 +39,15 @@ output "ako_install_command_to_apply_on_master_node" {
 }
 
 output "ssh_connect_to_client_VM" {
-  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@vsphere_virtual_machine.client.default_ip_address\n"
+  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@${vsphere_virtual_machine.client.default_ip_address}\n"
 }
 
 output "ssh_connect_to_client_K8s_cluster1_master_node" {
-  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@vsphere_virtual_machine.worker[0]default_ip_address\n"
+  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@${vsphere_virtual_machine.master[0].default_ip_address}\n"
 }
 
 output "ssh_connect_to_client_K8s_cluster2_master_node" {
-  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@vsphere_virtual_machine.worker[1]default_ip_address\n"
+  value = "\nssh -i ~/.ssh/${var.ssh_key.private_key_basename}-${var.vcenter.folder}.pem -o StrictHostKeyChecking=no ubuntu@${vsphere_virtual_machine.master[1].default_ip_address}\n"
 }
 
 output "ssh_connect_to_any_vm" {
