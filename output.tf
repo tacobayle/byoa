@@ -17,7 +17,7 @@ output "workers_K8s_IPs" {
 //}
 
 output "Avi_controllers" {
-  value = vsphere_virtual_machine.controller.*.default_ip_address
+  value = vsphere_virtual_machine.controller[0].default_ip_address
 }
 
 output "Avi_password" {
