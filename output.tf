@@ -20,6 +20,10 @@ output "Avi_controllers" {
   value = vsphere_virtual_machine.controller[0].default_ip_address
 }
 
+output "Avi_login" {
+  value = "admin"
+}
+
 output "Avi_password" {
   value = var.avi_password
 }
