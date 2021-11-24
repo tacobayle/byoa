@@ -127,7 +127,7 @@ resource "null_resource" "ako_prerequisites" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo \"avi_password=${var.avi_password}\" | sudo tee -a /home/ubuntu/.profile",
+      "echo \"avi_password=${random_string.avi_password.result}\" | sudo tee -a /home/ubuntu/.profile",
       "echo \"alias k=kubectl\" | sudo tee -a /home/ubuntu/.profile",
       "echo \"source <(kubectl completion bash | sed s/kubectl/k/g)\" | sudo tee -a /home/ubuntu/.profile",
       "helm repo add ako ${var.vmw.kubernetes.clusters[count.index].ako.helm.url}",
@@ -158,7 +158,7 @@ resource "null_resource" "ako_deploy" {
 
   provisioner "remote-exec" {
     inline = [
-      "helm --debug install ako/ako --generate-name --version ${var.vmw.kubernetes.clusters[count.index].ako.version} -f values.yml --namespace=${var.vmw.kubernetes.clusters[count.index].ako.namespace} --set avicredentials.username=admin --set avicredentials.password=${var.avi_password}"
+      "helm --debug install ako/ako --generate-name --version ${var.vmw.kubernetes.clusters[count.index].ako.version} -f values.yml --namespace=${var.vmw.kubernetes.clusters[count.index].ako.namespace} --set avicredentials.username=admin --set avicredentials.password=${random_string.avi_password.result}"
     ]
   }
 }

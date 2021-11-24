@@ -25,7 +25,7 @@ output "Avi_login" {
 }
 
 output "Avi_password" {
-  value = var.avi_password
+  value = random_string.avi_password.result
 }
 
 output "Destroy_command_all" {

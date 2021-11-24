@@ -6,8 +6,8 @@ variable "vsphere_password" {
   sensitive = true
 }
 variable "vsphere_server" {}
-variable "avi_password" {}
-variable "avi_username" {}
+//variable "avi_password" {}
+//variable "avi_username" {}
 
 variable "avi_vsphere_server" {}
 variable "docker_registry_username" {

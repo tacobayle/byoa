@@ -47,8 +47,6 @@ git clone https://github.com/tacobayle/byoa
   - `vsphere_user`
   - `vsphere_password`
   - `vsphere_server`
-  - `avi_password`
-  - `avi_username`
   - `avi_vsphere_server # use IP and not FQDN`
   - `docker_registry_username # this will avoid download issue when downloading docker images`
   - `docker_registry_password # this will avoid download issue when downloading docker images`
@@ -70,9 +68,6 @@ ENV file:
 export TF_VAR_vsphere_user=XXX
 export TF_VAR_vsphere_password=XXX
 export TF_VAR_vsphere_server=XXX
-
-export TF_VAR_avi_password=XXX
-export TF_VAR_avi_username=XXX
 
 export TF_VAR_avi_vsphere_server=XXX
 
