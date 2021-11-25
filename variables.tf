@@ -1,7 +1,7 @@
 #
 # Environment Variables
 #
-variable "vsphere_user" {}
+variable "vsphere_username" {}
 variable "vsphere_password" {
   sensitive = true
 }

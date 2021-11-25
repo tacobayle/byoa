@@ -81,7 +81,7 @@ resource "vsphere_virtual_machine" "client" {
 //
 //  provisioner "local-exec" {
 //    command = <<-EOT
-//      export GOVC_USERNAME=${var.vsphere_user}
+//      export GOVC_USERNAME=${var.vsphere_username}
 //      export GOVC_PASSWORD=${var.vsphere_password}
 //      export GOVC_DATACENTER=${var.vcenter.dc}
 //      export GOVC_URL=${var.vsphere_server}

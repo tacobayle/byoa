@@ -44,7 +44,7 @@ git clone https://github.com/tacobayle/byoa
 ## Variables:
 
 - Define the following environment variables:
-  - `vsphere_user`
+  - `vsphere_username`
   - `vsphere_password`
   - `vsphere_server`
   - `avi_vsphere_server # use IP and not FQDN`
@@ -54,7 +54,7 @@ git clone https://github.com/tacobayle/byoa
 
 which can be defined as the example below which uses a file called env.txt
 
-IMPORTANT: You must verify that the variable are set. Run echo $TF_VAR_vsphere_user and make sure you get your user.
+IMPORTANT: You must verify that the variable are set. Run echo $TF_VAR_vsphere_username and make sure you get your user.
 
 To load the variables use the following command:
 
@@ -65,7 +65,7 @@ export $(xargs <env.txt)
 ENV file:
 
 ```
-export TF_VAR_vsphere_user=XXX
+export TF_VAR_vsphere_username=XXX
 export TF_VAR_vsphere_password=XXX
 export TF_VAR_vsphere_server=XXX
 

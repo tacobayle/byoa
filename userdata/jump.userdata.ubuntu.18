@@ -33,7 +33,7 @@ write_files:
       plugin: vmware_vm_inventory
       strict: False
       hostname: ${vsphere_server}
-      username: ${vsphere_user}
+      username: ${vsphere_username}
       password: ${vsphere_password}
       validate_certs: False
       with_tags: True

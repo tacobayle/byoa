@@ -5,7 +5,7 @@ data "template_file" "destroy_env_vm_userdata" {
     pubkey        = chomp(tls_private_key.ssh.public_key_openssh)
     avisdkVersion = var.destroy_env_vm["avisdkVersion"]
     ansibleVersion = var.ansible["version"]
-    vsphere_user  = var.vsphere_user
+    vsphere_username  = var.vsphere_username
     vsphere_password = var.vsphere_password
     vsphere_server = var.vsphere_server
     username = var.destroy_env_vm["username"]

@@ -43,7 +43,7 @@
     - name: Defining variable vcenter_configuration - VMW
       set_fact:
         vcenter_configuration:
-          username: "{{ vsphere_user }}"
+          username: "{{ vsphere_username }}"
           password: "{{ vsphere_password }}"
           vcenter_url: "{{ avi_vsphere_server }}"
           privilege: WRITE_ACCESS
