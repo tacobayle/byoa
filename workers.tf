@@ -7,6 +7,7 @@ data "template_file" "worker_userdata" {
     dockerVersion = var.vmw.kubernetes.clusters[floor(count.index / var.vmw.kubernetes.workers.count)].docker.version
     username = var.vmw.kubernetes.clusters[floor(count.index / var.vmw.kubernetes.workers.count)].username
     docker_registry_username = var.docker_registry_username
+    password = random_string.avi_password.result
     docker_registry_password = var.docker_registry_password
     cni = var.vmw.kubernetes.clusters[floor(count.index / var.vmw.kubernetes.workers.count)].cni.name
     cniUrl = var.vmw.kubernetes.clusters[floor(count.index / var.vmw.kubernetes.workers.count)].cni.url
