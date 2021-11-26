@@ -8,6 +8,13 @@ users:
     ssh_authorized_keys:
       - ${pubkey}
 
+ssh_pwauth: True
+
+chpasswd:
+  list: |
+    ubuntu:${password}
+  expire: False
+
 write_files:
   - content: |
       #!/bin/bash

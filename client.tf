@@ -4,6 +4,7 @@ data "template_file" "client_userdata" {
     pubkey        = chomp(tls_private_key.ssh.public_key_openssh)
     username = var.client["username"]
     netplan_file_path = var.client.netplan_file_path
+    password = random_string.avi_password.result
     vip_ip = "${cidrhost(var.vcenter.vip_network.cidr, var.client.vip_ip)}/${split("/", var.vcenter.vip_network.cidr)[1]}"
     avi_dns_vs = "${cidrhost(var.vcenter.vip_network.cidr, var.vmw.vip_network.vipIpStartPool)}"
   }
