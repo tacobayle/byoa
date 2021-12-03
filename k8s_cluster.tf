@@ -127,7 +127,7 @@ resource "null_resource" "ako_prerequisites" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo \"export avi_password=${random_string.avi_password.result}\" | sudo tee -a /home/ubuntu/.profile",
+      "echo \"export avi_password='${random_string.avi_password.result}'\" | sudo tee -a /home/ubuntu/.profile",
       "echo \"alias k=kubectl\" | sudo tee -a /home/ubuntu/.profile",
       "echo \"source <(kubectl completion bash | sed s/kubectl/k/g)\" | sudo tee -a /home/ubuntu/.profile",
       "helm repo add ako ${var.vmw.kubernetes.clusters[count.index].ako.helm.url}",
