@@ -258,6 +258,6 @@ ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_private_key-remo_ako.pem -t ubuntu
     ```
   - Verify your host CRD rule status:
     ```shell
-    k get HostRule  avi_crd_hostrule_waf -o json | jq .status.status
+    k get HostRule  avi-crd-hostrule-waf -o json | jq .status.status
     ```  
   - this triggers a WAF policy which will be attached to the child VS in the Avi controller
