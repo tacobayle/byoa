@@ -1,7 +1,7 @@
 apiVersion: ako.vmware.com/v1alpha1
 kind: HostRule
 metadata:
-  name: avi_crd_hostrule_tls_cert
+  name: avi-crd-hostrule-tls-cert
   namespace: default
 spec:
   virtualhost:

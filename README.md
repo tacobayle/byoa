@@ -230,7 +230,7 @@ ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_private_key-remo_ako.pem -t ubuntu
     ```
   - Verify your host CRD rule status:
     ```shell
-    k get HostRule avi_crd_hostrule_tls_cert -o json | jq .status.status
+    k get HostRule avi-crd-hostrule-tls-cert -o json | jq .status.status
     ```
   - this triggers a new VS (child VS) in the Avi controller
   - you can check this new application by connecting/sshing to your client_demo VM and doing something like:
