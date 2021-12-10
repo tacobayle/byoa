@@ -12,9 +12,9 @@ output "workers_K8s_IPs" {
 //  value = vsphere_virtual_machine.destroy_env_vm.default_ip_address
 //}
 
-//output "client_VM_IP" {
-//  value = vsphere_virtual_machine.client.default_ip_address
-//}
+output "client_VM_IP" {
+  value = vsphere_virtual_machine.client.default_ip_address
+}
 
 output "Avi_controllers" {
   value = vsphere_virtual_machine.controller[0].default_ip_address
